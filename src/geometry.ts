@@ -1,5 +1,5 @@
 
-import type { GeometryInputs, GeometryResults, Projection } from "./types";
+import type { GeometryInputs, GeometryResults, Projection, ProResults } from "./types";
 
 function toRad(deg: number): number { return (deg * Math.PI) / 180; }
 function toDeg(rad: number): number { return (rad * 180) / Math.PI; }
@@ -72,6 +72,30 @@ export function pixelFootprintAtRange(
   const footprint_h = 2 * range_m * Math.tan((half_h / width_px) * 2);
   const footprint_v = 2 * range_m * Math.tan((half_v / height_px) * 2);
   return { footprint_h_m_px: footprint_h, footprint_v_m_px: footprint_v };
+}
+
+export function computeProResults(
+  width_px: number,
+  height_px: number,
+  dfov_deg: number,
+  pixel_size_um: number
+): ProResults {
+  const pixel_size_mm = pixel_size_um / 1000;
+  const sensor_w_mm = width_px * pixel_size_mm;
+  const sensor_h_mm = height_px * pixel_size_mm;
+  const sensor_d_mm = Math.hypot(sensor_w_mm, sensor_h_mm);
+  const focal_length_mm = (sensor_d_mm / 2) / Math.tan(toRad(dfov_deg) / 2);
+  const freq_nyquist = 500 / pixel_size_um;
+  return {
+    sensor_w_mm,
+    sensor_h_mm,
+    sensor_d_mm,
+    focal_length_mm,
+    freq_nyquist,
+    freq_half: freq_nyquist / 2,
+    freq_third: freq_nyquist / 3,
+    freq_quarter: freq_nyquist / 4,
+  };
 }
 
 export function computeAll(inputs: GeometryInputs): GeometryResults {

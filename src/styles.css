@@ -73,6 +73,9 @@ button { cursor: pointer; }
 .results-table.has-footprint {
   grid-template-columns: 6.5rem repeat(5, 1fr);
 }
+.results-table.freq-table {
+  grid-template-columns: 8rem 1fr;
+}
 .rt-th {
   padding: .45rem .7rem;
   background: #13161d;

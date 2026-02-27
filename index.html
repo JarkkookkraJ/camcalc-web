@@ -26,12 +26,28 @@
           </label>
 
           <label>
+            Mode
+            <div class="unit-toggle" role="group" aria-label="Calculation mode">
+              <button id="mode_standard" class="unit-btn active" type="button">Standard</button>
+              <button id="mode_pro" class="unit-btn" type="button">Pro</button>
+            </div>
+          </label>
+
+          <label>
             Resolution (width × height)
             <div class="row">
               <input id="width_px" type="number" min="1" value="4000" />
               <span>×</span>
               <input id="height_px" type="number" min="1" value="3000" />
               <span>px</span>
+            </div>
+          </label>
+
+          <label>
+            Pixel size
+            <div class="row">
+              <input id="pixel_size_um" type="number" step="0.01" min="0.01" placeholder="e.g., 3.45" />
+              <span>µm</span>
             </div>
           </label>
 

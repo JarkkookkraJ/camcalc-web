@@ -1,5 +1,5 @@
 
-import type { GeometryInputs, GeometryResults, Projection, UnitSystem } from "./types";
+import type { GeometryInputs, GeometryResults, Projection, ProResults, UnitSystem } from "./types";
 
 const FT_PER_M   = 3.28084;
 const IN_PER_CM  = 0.393701;
@@ -13,6 +13,15 @@ export function getUnit(): UnitSystem {
   return document.getElementById("unit_metric")?.classList.contains("active") ? "metric" : "imperial";
 }
 
+export function getProMode(): boolean {
+  return document.getElementById("mode_pro")?.classList.contains("active") ?? false;
+}
+
+export function setProMode(on: boolean): void {
+  document.getElementById("mode_standard")?.classList.toggle("active", !on);
+  document.getElementById("mode_pro")?.classList.toggle("active", on);
+}
+
 export function setUnit(unit: UnitSystem): void {
   document.getElementById("unit_metric")?.classList.toggle("active", unit === "metric");
   document.getElementById("unit_imperial")?.classList.toggle("active", unit === "imperial");
@@ -22,7 +31,33 @@ export function setUnit(unit: UnitSystem): void {
   if (rangeInput) rangeInput.placeholder = unit === "metric" ? "e.g., 10" : "e.g., 33";
 }
 
-export function renderResults(node: HTMLElement, res: GeometryResults, unit: UnitSystem): void {
+function renderProSection(p: ProResults): string {
+  return `
+    <div class="card">
+      <h3>Sensor image area</h3>
+      <div class="value">${fmt(p.sensor_w_mm, 2)} mm &nbsp;×&nbsp; ${fmt(p.sensor_h_mm, 2)} mm</div>
+      <small>Diagonal: ${fmt(p.sensor_d_mm, 2)} mm</small>
+    </div>
+    <div class="card">
+      <h3>Paraxial focal length (diagonal)</h3>
+      <div class="value">${fmt(p.focal_length_mm, 2)} mm</div>
+    </div>
+    <div class="results-table freq-table">
+      <div class="rt-th">Spatial frequency</div>
+      <div class="rt-th">lp/mm</div>
+      <div class="rt-label">Nyquist</div>
+      <div class="rt-cell">${fmt(p.freq_nyquist, 1)}</div>
+      <div class="rt-label">½ Nyquist</div>
+      <div class="rt-cell">${fmt(p.freq_half, 1)}</div>
+      <div class="rt-label">⅓ Nyquist</div>
+      <div class="rt-cell">${fmt(p.freq_third, 1)}</div>
+      <div class="rt-label">¼ Nyquist</div>
+      <div class="rt-cell">${fmt(p.freq_quarter, 1)}</div>
+    </div>
+  `;
+}
+
+export function renderResults(node: HTMLElement, res: GeometryResults, unit: UnitSystem, proRes?: ProResults): void {
   const hasFp = res.footprint_h_m_px !== undefined;
   const isImp = unit === "imperial";
 
@@ -74,6 +109,7 @@ export function renderResults(node: HTMLElement, res: GeometryResults, unit: Uni
       ${fpD}
     </div>
     ${frameCard}
+    ${proRes ? renderProSection(proRes) : ""}
   `;
 }
 
@@ -93,7 +129,9 @@ export function readInputs(): GeometryInputs {
   const range_m = rangeRaw !== undefined
     ? (getUnit() === "imperial" ? rangeRaw / FT_PER_M : rangeRaw)
     : undefined;
-  return { width_px, height_px, dfov_deg, projection, range_m };
+  const pixelSizeVal = (getEl<HTMLInputElement>("pixel_size_um")).value;
+  const pixel_size_um = pixelSizeVal ? Number(pixelSizeVal) : undefined;
+  return { width_px, height_px, dfov_deg, projection, range_m, pixel_size_um };
 }
 
 export function setError(msg?: string): void {

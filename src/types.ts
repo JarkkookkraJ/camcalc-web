@@ -14,6 +14,18 @@ export interface GeometryInputs {
   dfov_deg: number;
   projection?: Projection;
   range_m?: number;
+  pixel_size_um?: number;
+}
+
+export interface ProResults {
+  sensor_w_mm: number;
+  sensor_h_mm: number;
+  sensor_d_mm: number;
+  focal_length_mm: number;
+  freq_nyquist: number;
+  freq_half: number;
+  freq_third: number;
+  freq_quarter: number;
 }
 
 export interface GeometryResults {
