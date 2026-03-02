@@ -54,6 +54,7 @@ button { cursor: pointer; }
 .unit-btn.active { background: var(--accent); color: #fff; }
 .unit-btn:focus { outline: 2px solid var(--accent); outline-offset: -2px; }
 #error { color: var(--err); min-height: 1.2em; }
+#width_px, #height_px { width: 5rem; }
 
 .results { display: grid; gap: .75rem; }
 .card {
