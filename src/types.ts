@@ -1,18 +1,10 @@
 
 export type UnitSystem = "metric" | "imperial";
 
-export type Projection =
-  | "rectilinear"
-  | "equidistant"
-  | "equisolid"
-  | "orthographic"
-  | "stereographic";
-
 export interface GeometryInputs {
   width_px: number;
   height_px: number;
   dfov_deg: number;
-  projection?: Projection;
   range_m?: number;
   pixel_size_um?: number;
 }

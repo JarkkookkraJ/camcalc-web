@@ -1,5 +1,5 @@
 
-import type { GeometryInputs, GeometryResults, Projection, ProResults, UnitSystem } from "./types";
+import type { GeometryInputs, GeometryResults, ProResults, UnitSystem } from "./types";
 
 const FT_PER_M   = 3.28084;
 const IN_PER_CM  = 0.393701;
@@ -123,7 +123,6 @@ export function readInputs(): GeometryInputs {
   const width_px = Number((getEl<HTMLInputElement>("width_px")).value);
   const height_px = Number((getEl<HTMLInputElement>("height_px")).value);
   const dfov_deg = Number((getEl<HTMLInputElement>("dfov_deg")).value);
-  const projection = (getEl<HTMLSelectElement>("projection")).value as Projection;
   const rangeVal = (getEl<HTMLInputElement>("range_m")).value;
   const rangeRaw = rangeVal ? Number(rangeVal) : undefined;
   const range_m = rangeRaw !== undefined
@@ -131,7 +130,7 @@ export function readInputs(): GeometryInputs {
     : undefined;
   const pixelSizeVal = (getEl<HTMLInputElement>("pixel_size_um")).value;
   const pixel_size_um = pixelSizeVal ? Number(pixelSizeVal) : undefined;
-  return { width_px, height_px, dfov_deg, projection, range_m, pixel_size_um };
+  return { width_px, height_px, dfov_deg, range_m, pixel_size_um };
 }
 
 export function setError(msg?: string): void {

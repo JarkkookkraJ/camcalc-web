@@ -12,19 +12,18 @@ function applyURLParams(): void {
   if (p.has("unit")) setUnit(p.get("unit") as UnitSystem);
   if (p.has("pro")) setProMode(p.get("pro") === "1");
   const setIf = (id: string, key: string) => {
-    const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | null;
+    const el = document.getElementById(id) as HTMLInputElement | null;
     if (el && p.has(key)) el.value = String(p.get(key));
   };
   setIf("width_px", "w");
   setIf("height_px", "h");
   setIf("dfov_deg", "dfov");
-  setIf("projection", "proj");
   setIf("range_m", "range");
   setIf("pixel_size_um", "pixel");
 }
 
 function shareURL(): void {
-  const { width_px, height_px, dfov_deg, projection } = readInputs();
+  const { width_px, height_px, dfov_deg } = readInputs();
   const unit = getUnit();
   const rangeRaw = (document.getElementById("range_m") as HTMLInputElement)?.value;
   const pixelRaw = (document.getElementById("pixel_size_um") as HTMLInputElement)?.value;
@@ -33,7 +32,6 @@ function shareURL(): void {
   q.set("w", String(width_px));
   q.set("h", String(height_px));
   q.set("dfov", String(dfov_deg));
-  q.set("proj", String(projection));
   q.set("unit", unit);
   q.set("pro", getProMode() ? "1" : "0");
   if (rangeRaw) q.set("range", rangeRaw);
@@ -95,7 +93,7 @@ export function init(): void {
   document.getElementById("mode_standard")?.addEventListener("click", () => { setProMode(false); computeAndRender(); });
   document.getElementById("mode_pro")?.addEventListener("click", () => { setProMode(true); computeAndRender(); });
 
-  ["width_px","height_px","dfov_deg","projection","range_m","pixel_size_um"].forEach(id => {
+  ["width_px","height_px","dfov_deg","range_m","pixel_size_um"].forEach(id => {
     const el = document.getElementById(id);
     el?.addEventListener("input", computeAndRender);
   });

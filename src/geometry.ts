@@ -1,5 +1,5 @@
 
-import type { GeometryInputs, GeometryResults, Projection, ProResults } from "./types";
+import type { GeometryInputs, GeometryResults, ProResults } from "./types";
 
 function toRad(deg: number): number { return (deg * Math.PI) / 180; }
 function toDeg(rad: number): number { return (rad * 180) / Math.PI; }
@@ -7,14 +7,8 @@ function toDeg(rad: number): number { return (rad * 180) / Math.PI; }
 export function hvFovFromDiagonal(
   dfov_deg: number,
   width_px: number,
-  height_px: number,
-  projection: Projection = "rectilinear"
+  height_px: number
 ): { hfov_deg: number; vfov_deg: number } {
-  // MVP: rectilinear-only derivation. Other projections will need proper mappings.
-  if (projection !== "rectilinear") {
-    // Placeholder: keep rectilinear mapping for hfov/vfov until real models are added.
-  }
-
   const a = width_px / height_px;
   if (!Number.isFinite(a) || a <= 0) {
     throw new Error("Invalid aspect ratio (width/height).");
@@ -99,7 +93,7 @@ export function computeProResults(
 }
 
 export function computeAll(inputs: GeometryInputs): GeometryResults {
-  const { width_px, height_px, dfov_deg, projection = "rectilinear", range_m } = inputs;
+  const { width_px, height_px, dfov_deg, range_m } = inputs;
 
   if (!(width_px > 0 && Number.isFinite(width_px))) {
     throw new Error("Width must be a positive number.");
@@ -112,7 +106,7 @@ export function computeAll(inputs: GeometryInputs): GeometryResults {
   }
 
   const diag_px = Math.hypot(width_px, height_px);
-  const { hfov_deg, vfov_deg } = hvFovFromDiagonal(dfov_deg, width_px, height_px, projection);
+  const { hfov_deg, vfov_deg } = hvFovFromDiagonal(dfov_deg, width_px, height_px);
   const { ppd_h, ppd_v, ppd_d } = ppdFromFovs(hfov_deg, vfov_deg, dfov_deg, width_px, height_px);
   const { ifov_h_deg_px, ifov_v_deg_px } = ifovDegPerPx(hfov_deg, vfov_deg, width_px, height_px);
   const ifov_d_deg_px = dfov_deg / diag_px;
